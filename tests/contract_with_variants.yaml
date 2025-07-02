@@ -1,0 +1,51 @@
+# Example contract with templating using request attributes
+- id: user-profile-with-context
+  method: GET
+  path: /api/users/{userId}/profile
+  path_parameters:
+    - name: userId
+      schema:
+        type: string
+      required: true
+  response:
+    variants:
+      - condition: headers['X-Role'] == 'admin'
+        response:
+          status: 200
+          headers:
+            Content-Type: application/json
+            X-User-Role: "{{ headers['X-Role'] }}"
+            X-Debug-Info: "Accessed by admin from {{ headers['X-Source-IP'] | default('unknown') }}"
+          body:
+            userId: "{{ path_params.userId }}"
+            email: "admin-view@example.com"
+            role: "{{ headers['X-Role'] | default('user') }}"
+            permissions: ["read", "write", "admin"]
+            requestInfo:
+              timestamp: "{{ now.timestamp }}"
+              requestId: "{{ uuid }}"
+      
+      - condition: query_params.version == '2'
+        response:
+          status: 200
+          headers:
+            Content-Type: application/json
+            X-API-Version: "{{ query_params.version }}"
+          body:
+            userId: "{{ path_params.userId }}"
+            displayName: "User {{ path_params.userId }}"
+            email: "user-v2@example.com"
+            apiVersion: "{{ query.version | default('1') }}"
+    
+    fallback_response:
+      status: 200
+      headers:
+        Content-Type: application/json
+        X-Generated-At: "{{ now.timestamp }}"
+      body:
+        userId: "{{ path_params.userId }}"
+        displayName: "Default User {{ path_params.userId }}"
+        email: "{{ path_params.userId }}@example.com"
+        metadata:
+          query: "{{ query | tojson }}"
+          userAgent: "{{ headers['User-Agent'] | default('unknown') }}"

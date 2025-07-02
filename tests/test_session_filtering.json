@@ -1,0 +1,32 @@
+{
+  "name": "mockapi",
+  "version": "1.0.0",
+  "description": "API mocking and verification tool",
+  "main": "index.js",
+  "bin": {
+    "mockapi": "./cli.js"
+  },
+  "scripts": {
+    "test": "jest",
+    "start": "node cli.js"
+  },
+  "dependencies": {
+    "axios": "^0.26.1",
+    "chalk": "^4.1.2",
+    "commander": "^9.1.0",
+    "deep-diff": "^1.0.2",
+    "express": "^4.17.3",
+    "handlebars": "^4.7.7",
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21",
+    "path-to-regexp": "^6.2.0",
+    "table": "^6.8.0",
+    "uuid": "^8.3.2",
+    "is-uuid": "^1.0.2",
+    "dayjs": "^1.11.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "license": "MIT"
+}
